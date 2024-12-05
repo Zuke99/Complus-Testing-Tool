@@ -1,6 +1,7 @@
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require("cors");
+const path = require('path');
 
 
 // Initialize the app
@@ -11,10 +12,10 @@ const dbRoutes = require('./routes/dbRoutes');
 
 // Create a MySQL connection pool
 const db = mysql.createPool({
-  host: 'localhost',  // or your MySQL server IP
-  user: 'root',       // your MySQL username
-  password: '12345',  // your MySQL password
-  database: 'complus_db'  // your database name
+  host: 'sql12.freemysqlhosting.net',  // or your MySQL server IP
+  user: 'sql12750042',       // your MySQL username
+  password: 'pMSeAqpjUF',  // your MySQL password
+  database: 'sql12750042'  // your database name
 });
 app.use(cors());
 app.use(express.json());
@@ -43,4 +44,10 @@ db.getConnection((err, connection) => {
     console.log('Database connected successfully!');
     connection.release(); // Release the connection back to the pool
   });
+
+  app.use(express.static(path.join(__dirname,'build')))
+app.get('*', (req, res) => {
+  res.sendFile('index.html', { root: path.join(__dirname, 'build') });
+});
+
   
