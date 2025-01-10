@@ -24,19 +24,19 @@ router.get('/formulae', (req, res) => {
 
 // Route to get all records from the `monthly_summary` table
 router.post('/monthly_summary', (req, res) => {
-  var query = 'SELECT * FROM monthly_summary where formula_id > 0 ';
+  var query = 'SELECT * FROM monthly_summary where ';
   const month = parseInt(req.body.month, 10);
   const year = parseInt(req.body.year, 10);
   const reportType = req.body.reportType;
   if(month){
-    query += `and month = ${month} `
+    query += `month = ${month} `
   }
   if(year){
     query += `and year = ${year} `
   }
-  if(reportType !== ""){
-    query += `and report_type = '${reportType}' `
-  }
+  // if(reportType !== ""){
+  //   query += `and report_type = '${reportType}' `
+  // }
   console.log('query = ', query)
 
   db.query(query, (err, results) => {

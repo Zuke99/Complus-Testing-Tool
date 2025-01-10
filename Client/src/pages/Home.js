@@ -12,8 +12,8 @@ const Home = () => {
   const { formulae, monthlySummary, loading, error } = useSelector((state) => state.dbData);
   const [treeData, setTreeData] = useState([]);
   const [topLevelParents, setTopLevelParents] = useState([]);
-  const [month, setMonth] = useState(11);
-  const [year, setYear] = useState(2023);
+  const [month, setMonth] = useState(1);
+  const [year, setYear] = useState(2024);
   const [reportType, setReportType] = useState('Mgt P&L');
   const [selectedOption, setSelectedOption] = useState("");
   const [level, setLevel] = useState(1);
@@ -24,6 +24,7 @@ const Home = () => {
   const [selectedTable, setSelectedTable] = useState("Monthly_summary");
   const [name, setName] = useState('');
   const [toggleFormulaHie, setToggleFormulaHie] = useState(false);
+  const [monthlySummaryData, setMonthlySummaryData] = useState();
   const options = [
     "",
     "Mgt P&L",
@@ -53,7 +54,8 @@ const Home = () => {
     "Meal & Entertainment CAML",
     "Exchange Gain or Loss CAML",
     "Exchange Gain or Loss CAMS",
-    "Mgt BS"
+    "Mgt BS",
+    "Duplicate"
   ];
 
   const tables = [
@@ -87,7 +89,8 @@ const Home = () => {
     dispatch(fetchMonthlySummary(data))
     .then((response) => {
       setCurrentData(response.payload);
-      // console.log("Got ALl data", currentData)
+      setMonthlySummaryData(response.payload);
+      console.log("Got ALl data", currentData)
       
     })
     console.log("tree length", tree.length);
@@ -153,10 +156,35 @@ const Home = () => {
   }
 
   const expand = (parent) => {
+    let parentFromFormulae = formulaeData.filter((item) => item.id === parent.formula_id);
+    console.log("parentFromFormulae", parentFromFormulae)
+
+    let ChildFromFormulae;
     console.log("Clicked On",parent);
     setLevel(0);
     console.log("currentData",currentData)
-    const nextImmediateChildren = currentData.filter((item) => item.parent_id === parent.formula_id)
+    // const nextImmediateChildren = currentData.filter((item) => item.parent_id === parent.formula_id)
+    if (parentFromFormulae[0].similar_formula_id === null) {
+      // If similar_formula_id is null, filter based on parent.formula_id
+      ChildFromFormulae = formulaeData.filter((item) => item.parent_id === parent.formula_id);
+  } else {
+      // If similar_formula_id is not null, filter based on similar_formula_id
+      alert("using Similar Id");
+      ChildFromFormulae = formulaeData.filter((item) => item.parent_id === parentFromFormulae[0].similar_formula_id);
+  }
+  const ChildFromMonthly_summary = currentData.filter((item) =>
+    ChildFromFormulae.filter((child) => child.id === item.formula_id)
+);
+
+let results = [];
+for(let i = 0;i<ChildFromFormulae.length;i++){
+  for(let j = 0; j<currentData.length;j++){
+    if(currentData[j].formula_id === ChildFromFormulae[i].id){
+      results.push(currentData[j]);
+    }
+  }
+}
+const nextImmediateChildren = results;
     console.log(`Next Immediate CHildren ${JSON.stringify(nextImmediateChildren, null, 2)}`)
     const tree = [];
     tree[level] = nextImmediateChildren;
@@ -210,7 +238,7 @@ const nextImmediateChildren = results;
 console.log(nextImmediateChildren);
     tree.length = index + 1;
     tree[index + 1] = nextImmediateChildren;
-    console.log(`Next Immediate CHildren ${nextImmediateChildren}`)
+    console.log(`Next Immediate CHildren`, nextImmediateChildren)
     // setTree(tree);
     console.log("Tree  ----->" ,tree, null, 2);
 
@@ -223,9 +251,9 @@ console.log(nextImmediateChildren);
 
   const handleToggleFormula = () => {
     setToggleFormulaHie(!toggleFormulaHie);
-    setTree([]);
+    // setTree([]);
     // setCurrentData([]);
-    setTopLevelParents([]);
+    // setTopLevelParents([]);
   }
 
   return (
@@ -337,7 +365,7 @@ console.log(nextImmediateChildren);
             <p className="text-xs font-medium text-gray-800 ml-1">{parent.name}</p>
           </div>
           <p className="bg-green-600 text-white px-1 py-0.5 rounded-sm text-[10px]">
-            {parent.monthly_amount_hkd}
+           {parent.report_type !== 'Mgt BS' ? parent.monthly_amount_hkd : parent.closing_balance}
           </p>
           <p
             className={`text-[10px] ${
@@ -358,6 +386,7 @@ console.log(nextImmediateChildren);
           <DisplayDiv
             data={treeItem}
             onItemClick={(item) => setCOnsecutiveChildren(item, index)}
+            monthlySummaryData={monthlySummaryData}
           />
         </div>
       ))}
@@ -371,7 +400,7 @@ console.log(nextImmediateChildren);
 
     { toggleFormulaHie && <div className='border-t-8 border-red-600 h-20 '>
         <label>Formulae Dependancy Tree</label>
-          <DependancyTree formulaId = {formulaId} formulaeData={formulaeData} />
+          <DependancyTree formulaId = {formulaId} formulaeData={formulaeData} monthlySummaryData={monthlySummaryData} />
       </div>}
     </>
   );

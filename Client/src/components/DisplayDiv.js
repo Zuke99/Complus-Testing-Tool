@@ -3,7 +3,8 @@ import { FaArrowRight } from 'react-icons/fa';
 
 function DisplayDiv(props) {
     useEffect(() => {
-        // console.log("PROPSS", props.data);
+        console.log("PROPSS", props.monthlySummaryData);
+
     })
 
     const onGettingClicked = (parent) => {
@@ -22,12 +23,16 @@ function DisplayDiv(props) {
             >
               <div className="flex items-center space-x-1">
                 {/* Displaying the name */}
-                <p className="text-[10px] text-gray-600">{item.formula_id ? item.formula_id : item.id}</p>
+                <p className="text-[10px] text-gray-600">{item.formula_id ? item.formula_id : item.id} ({item.data_source_id}) [{item.report_type}]</p>
                 <p className="text-xs font-medium text-gray-800">{item.name}</p>
     
                 {/* Displaying monthly_amount_hkd */}
                 <p className="bg-green-600 text-white px-1 py-0.5 rounded-sm text-[10px]">
-                  {item.monthly_amount_hkd}
+                 {/* {item.report_type !== 'Mgt BS' ? (item.monthly_amount_hkd ? item.monthly_amount_hkd :  props.monthlySummaryData.find(
+        (data) => data.formula_id === item.id
+    )?.monthly_amount_hkd || "N/A") : item.closing_balance} */}
+    {props.monthlySummaryData?.find((data) => data.formula_id === item.id)?.closing_balance || props.monthlySummaryData?.find((data) => data.formula_id === item.formula_id)?.closing_balance}
+
                 </p>
               </div>
     
