@@ -28,10 +28,8 @@ function DisplayDiv(props) {
     
                 {/* Displaying monthly_amount_hkd */}
                 <p className="bg-green-600 text-white px-1 py-0.5 rounded-sm text-[10px]">
-                 {/* {item.report_type !== 'Mgt BS' ? (item.monthly_amount_hkd ? item.monthly_amount_hkd :  props.monthlySummaryData.find(
-        (data) => data.formula_id === item.id
-    )?.monthly_amount_hkd || "N/A") : item.closing_balance} */}
-    {props.monthlySummaryData?.find((data) => data.formula_id === item.id)?.closing_balance || props.monthlySummaryData?.find((data) => data.formula_id === item.formula_id)?.closing_balance}
+                 {item.monthly_amount_hkd }
+    {/* {props.monthlySummaryData?.find((data) => data.formula_id === item.id)?.closing_balance || props.monthlySummaryData?.find((data) => data.formula_id === item.formula_id)?.closing_balance} */}
 
                 </p>
               </div>

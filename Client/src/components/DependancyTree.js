@@ -77,8 +77,8 @@ function DependancyTree(props) {
                 <p className="text-xs font-medium text-gray-800 ml-1">{formula.name}</p>
               </div>
               <p className="bg-green-600 text-white px-1 py-0.5 rounded-sm text-[10px]">
-                {/* {props.monthlySummaryData.find((data) => data.formula_id === formula.id)?.monthly_amount_hkd || 'N/A'} */}
-                {props.monthlySummaryData.find((data) => data.formula_id === formula.id)?.closing_balance || 'N/A'}
+                {props.monthlySummaryData.find((data) => data.formula_id === formula.id)?.monthly_amount_hkd || 'N/A'}
+                {/* {props.monthlySummaryData.find((data) => data.formula_id === formula.id)?.closing_balance || 'N/A'} */}
               </p>
               <p
                 className={`text-[10px] ${
